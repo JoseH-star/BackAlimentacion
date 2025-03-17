@@ -1,6 +1,17 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AlimentacionController;
 
+Route::post('/guardar-datos', [AlimentacionController::class, 'store']);
+Route::get('/listar-datos', [AlimentacionController::class, 'index']);
+
+
+
+
+
+/*
 use App\Http\Controllers\TestBienestarController;
 use App\Http\Controllers\TestInicialController;
 use App\Http\Controllers\InicioController;
@@ -22,8 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/objetivo', [ObjetivoSaludController::class, 'store']);
     Route::put('/objetivo/{id}', [ObjetivoSaludController::class, 'update']);
     Route::get('/historial', [ObjetivoSaludController::class, 'historial']);
-});
-/*
+
+
 Route::get('/test-inicial', [ApiController::class, 'testInicial']);
 Route::get('/inicio', [ApiController::class, 'inicio']);
 Route::get('/frutas', [ApiController::class, 'informacionFrutas']);
@@ -35,3 +46,4 @@ Route::get('/test', function () {
     return response()->json(['message' => 'API funcionando en Laravel 12']);
 });
 */
+
