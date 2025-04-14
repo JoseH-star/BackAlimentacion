@@ -6,14 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('informacion_frtutas', function (Blueprint $table) {
+        Schema::create('foros', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('image');
-            $table->text('description');
-            $table->string('url');
+
+            $table->string('nombre');
+            $table->text('contenido');
+            $table->unsignedInteger('likes')->default(0);
+
             $table->timestamps();
         });
     }
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('informacion_frtutas');
+        Schema::dropIfExists('foros');
     }
 };

@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('objetivos_salud', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Relación con usuario
+
             $table->text('descripcion');
             $table->date('fecha_objetivo');
             $table->float('peso_actual');
             $table->float('meta_peso');
             $table->text('plan_dieta')->nullable();
+
             $table->timestamps();
-    
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 };

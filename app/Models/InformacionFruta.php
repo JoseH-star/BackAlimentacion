@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ObjetivoSalud extends Model
+class InformacionFruta extends Model
 {
     use HasFactory;
 
-    protected $table = 'objetivos_salud';
+    protected $table = 'informacion_frutas';
 
     protected $fillable = [
+        'fruta',
+        'imagen',
         'descripcion',
-        'fecha_objetivo',
-        'peso_actual',
-        'meta_peso',
-        'plan_dieta'
+        'clasificacion',
+        'peso_promedio',
+        'color',
+        'usos'
     ];
 }

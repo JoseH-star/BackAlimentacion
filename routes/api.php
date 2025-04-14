@@ -1,49 +1,23 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlimentacionController;
-
-Route::post('/guardar-datos', [AlimentacionController::class, 'store']);
-Route::get('/listar-datos', [AlimentacionController::class, 'index']);
-
-
-
-
-
-/*
-use App\Http\Controllers\TestBienestarController;
-use App\Http\Controllers\TestInicialController;
-use App\Http\Controllers\InicioController;
-use App\Http\Controllers\InformacionFrutasController;
-use App\Http\Controllers\SeguimientoProcesoController;
 use App\Http\Controllers\ForoController;
+use App\Http\Controllers\InformacionFrutaController;
+use App\Http\Controllers\ObjetivoSaludController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestBienestarController;
 
 
 Route::post('/test-bienestar', [TestBienestarController::class, 'store']);
-Route::get('/test-inicial', [TestInicialController::class, 'index']);
-Route::get('/inicio', [InicioController::class, 'index']);
-Route::get('/informacion-frutas', [InformacionFrutasController::class, 'index']);
-Route::get('/seguimiento-proceso', [SeguimientoProcesoController::class, 'index']);
+
+Route::get('frutas', [InformacionFrutaController::class, 'index']);
+Route::get('frutas/{id}', [InformacionFrutaController::class, 'show']);
+
+Route::post('/objetivos', [ObjetivoSaludController::class, 'store']);
+Route::get('/progreso', [ObjetivoSaludController::class, 'getProgressData']);
+
 Route::get('/foro', [ForoController::class, 'index']);
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/objetivo', [ObjetivoSaludController::class, 'index']);
-    Route::post('/objetivo', [ObjetivoSaludController::class, 'store']);
-    Route::put('/objetivo/{id}', [ObjetivoSaludController::class, 'update']);
-    Route::get('/historial', [ObjetivoSaludController::class, 'historial']);
-
-
-Route::get('/test-inicial', [ApiController::class, 'testInicial']);
-Route::get('/inicio', [ApiController::class, 'inicio']);
-Route::get('/frutas', [ApiController::class, 'informacionFrutas']);
-Route::get('/seguimiento', [ApiController::class, 'seguimientoProceso']);
-Route::get('/foro', [ApiController::class, 'foro']);
-
-
-Route::get('/test', function () {
-    return response()->json(['message' => 'API funcionando en Laravel 12']);
-});
-*/
-
+Route::post('/foro', [ForoController::class, 'store']);
+Route::put('/foro/{foro}', [ForoController::class, 'update']);
+Route::delete('/foro/{foro}', [ForoController::class, 'destroy']);
+Route::post('/foro/{foro}/like', [ForoController::class, 'like']);
+Route::post('/foro/{foro}/comentario', [ForoController::class, 'comment']);
