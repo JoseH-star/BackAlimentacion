@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alimentacions', function (Blueprint $table) {
+        Schema::create('informacion_frutas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->integer('calorias');
+
+            $table->string('fruta');
+            $table->string('imagen');
+            $table->text('descripcion');
+            $table->text('clasificacion');
+            $table->text('peso_promedio');
+            $table->text('color');
+            $table->text('usos');
+            
             $table->timestamps();
         });
     }
@@ -24,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alimentacions');
+        Schema::dropIfExists('informacion_frutas');
     }
 };

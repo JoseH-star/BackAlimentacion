@@ -2,61 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ObjetivoSalud;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ObjetivoSaludController extends Controller
 {
-    // Obtener objetivo actual del usuario
-    public function index()
-    {
-        $objetivo = ObjetivoSalud::where('user_id', Auth::id())->latest()->first();
-        return response()->json($objetivo);
-    }
-
-    // Guardar nuevo objetivo de salud
     public function store(Request $request)
     {
-        $request->validate([
-            'descripcion' => 'required|string',
+        $validated = $request->validate([
+            'descripcion' => 'required|string|max:255',
             'fecha_objetivo' => 'required|date',
-            'peso_actual' => 'required|numeric',
-            'meta_peso' => 'required|numeric'
+            'peso_actual' => 'required|numeric|between:20,200',
+            'meta_peso' => 'required|numeric|between:20,200'
         ]);
 
-        $objetivo = ObjetivoSalud::create([
-            'user_id' => Auth::id(),
-            'descripcion' => $request->descripcion,
-            'fecha_objetivo' => $request->fecha_objetivo,
-            'peso_actual' => $request->peso_actual,
-            'meta_peso' => $request->meta_peso,
-            'plan_dieta' => $request->plan_dieta
-        ]);
+        $diferencia = $validated['meta_peso'] - $validated['peso_actual'];
+        
+        $validated['plan_dieta'] = $diferencia < 0 
+            ? $this->generarPlanPerdidaPeso(abs($diferencia))
+            : $this->generarPlanGananciaPeso($diferencia);
 
-        return response()->json(['mensaje' => 'Objetivo guardado con éxito', 'objetivo' => $objetivo]);
+        $objetivo = ObjetivoSalud::create($validated);
+
+        return response()->json([
+            'mensaje' => 'Objetivo guardado exitosamente',
+            'data' => $objetivo
+        ], 201);
     }
 
-    // Actualizar objetivo existente
-    public function update(Request $request, $id)
+    private function generarPlanPerdidaPeso($kg)
     {
-        $request->validate([
-            'meta_peso' => 'required|numeric'
-        ]);
+        $planes = [
+            'Dieta baja en carbohidratos + 30min cardio diario',
+            'Déficit calórico 500kcal + Entrenamiento fuerza',
+            'Ayuno intermitente 16/8 + Dieta mediterránea'
+        ];
+        return $planes[array_rand($planes)] . " (-$kg kg)";
+    }
 
-        $objetivo = ObjetivoSalud::where('id', $id)->where('user_id', Auth::id())->first();
-        if (!$objetivo) {
-            return response()->json(['mensaje' => 'Objetivo no encontrado'], 404);
+    private function generarPlanGananciaPeso($kg)
+    {
+        $planes = [
+            'Superávit 500kcal + Rutina pesas 5 días',
+            '6 comidas diarias + Batidos proteicos',
+            'Suplementación creatina + Dieta hiperproteica'
+        ];
+        return $planes[array_rand($planes)] . " (+$kg kg)";
+    }
+
+    public function getProgressData()
+    {
+        try {
+            $objetivos = ObjetivoSalud::latest()->take(3)->get();
+
+            return response()->json([
+                'meta_actual' => $objetivos->first()->meta_peso ?? null,
+                'peso_actual' => $objetivos->first()->peso_actual ?? null,
+                'historial' => $objetivos->reverse()->values(),
+                'evolucion' => $objetivos->pluck('peso_actual')->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'meta_actual' => null,
+                'peso_actual' => null,
+                'historial' => [],
+                'evolucion' => []
+            ]);
         }
-
-        $objetivo->update(['meta_peso' => $request->meta_peso]);
-        return response()->json(['mensaje' => 'Meta actualizada con éxito']);
-    }
-
-    // Obtener historial de avances
-    public function historial()
-    {
-        $historial = ObjetivoSalud::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
-        return response()->json($historial);
     }
 }
